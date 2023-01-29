@@ -14,13 +14,12 @@ Uses Google's account REST API: https://cloud.google.com/identity-platform/docs/
 Go to respective end-point to see response json.
 
 If <bahamagames> instance doesnt exists go to <__bg_google_accounts_http_request>, and delete marked line.
+
+Destroy ds_map <GOOGLE_ACCOUNTS_HTTP_HEADER_MAP> when done: ds_map_destroy(GOOGLE_ACCOUNTS_HTTP_HEADER_MAP);
 */
 
 //Default apikey to be used if function api keys are are not passed.
 #macro GOOGLE_APIKEY				"ENTER_API_KEY_HERE"
-
-//Destroy map when done: ds_map_destroy(GOOGLE_ACCOUNTS_HTTP_MAP);
-#macro GOOGLE_ACCOUNTS_HTTP_MAP		global.__BG_GOOGLE_ACCOUNTS_HTTP_MAP
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/createAuthUri
 /// @description					If an email identifier is specified, checks and returns if any user account is 
@@ -34,7 +33,7 @@ If <bahamagames> instance doesnt exists go to <__bg_google_accounts_http_request
 /// @return {Real}					Http Async Request ID.
 function google_account_create_auth_uri(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("createAuthUri", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("createAuthUri", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/delete
@@ -45,7 +44,7 @@ function google_account_create_auth_uri(__bg_fields, __bg_callback = undefined, 
 /// @return {Real}					Http Async Request ID.
 function google_account_delete(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("delete", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("delete", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/lookup
@@ -58,7 +57,7 @@ function google_account_delete(__bg_fields, __bg_callback = undefined, __bg_apik
 /// @return {Real}					Http Async Request ID.
 function google_account_lookup(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("lookup", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("lookup", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/resetPassword
@@ -71,7 +70,7 @@ function google_account_lookup(__bg_fields, __bg_callback = undefined, __bg_apik
 /// @return {Real}					Http Async Request ID.
 function google_account_reset_password(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("resetPassword", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("resetPassword", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/sendOobCode
@@ -83,7 +82,7 @@ function google_account_reset_password(__bg_fields, __bg_callback = undefined, _
 /// @return {Real}					Http Async Request ID.
 function google_account_send_oob_code(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("sendOobCode", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("sendOobCode", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/sendVerificationCode
@@ -94,7 +93,7 @@ function google_account_send_oob_code(__bg_fields, __bg_callback = undefined, __
 /// @return {Real}					Http Async Request ID.
 function google_account_send_verification_code(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("sendVerificationCode", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("sendVerificationCode", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithCustomToken
@@ -109,7 +108,7 @@ function google_account_signin_with_custom_token(__bg_token, __bg_callback = und
 {
 	var 
 	__bg_fields	= {"requestSecureToken": true, "token": __bg_token},
-	__bg_id		= __bg_google_accounts_http_request("signInWithCustomToken", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	__bg_id		= __bg_google_accounts_http_request("signInWithCustomToken", __bg_fields, __bg_callback, __bg_apikey);
 	delete __bg_fields;
 	return __bg_id;
 }
@@ -124,7 +123,7 @@ function google_account_signin_with_custom_token(__bg_token, __bg_callback = und
 /// @return {Real}					Http Async Request ID.
 function google_account_signin_with_email_link(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("signInWithEmailLink", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signInWithEmailLink", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithGameCenter
@@ -137,7 +136,7 @@ function google_account_signin_with_email_link(__bg_fields, __bg_callback = unde
 /// @return {Real}					Http Async Request ID.
 function google_account_signin_with_game_center(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("signInWithGameCenter", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signInWithGameCenter", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithIdp
@@ -154,7 +153,7 @@ function google_account_signin_with_game_center(__bg_fields, __bg_callback = und
 /// @return {Real}					Http Async Request ID.
 function google_account_signin_with_idp(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("signInWithIdp", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signInWithIdp", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithPassword
@@ -169,7 +168,7 @@ function google_account_signin_with_password(__bg_email, __bg_password, __bg_cal
 {
 	var 
 	__bg_fields = {"returnSecureToken": true, "email": __bg_email, "password": __bg_password},
-	__bg_id		= __bg_google_accounts_http_request("signInWithPassword", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	__bg_id		= __bg_google_accounts_http_request("signInWithPassword", __bg_fields, __bg_callback, __bg_apikey);
 	delete __bg_fields;
 	return __bg_id;
 }
@@ -184,7 +183,7 @@ function google_account_signin_with_password(__bg_email, __bg_password, __bg_cal
 /// @return {Real}					Http Async Request ID.
 function google_account_signin_with_phone_number(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
-	return __bg_google_accounts_http_request("signInWithPhoneNumber", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signInWithPhoneNumber", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signUp
@@ -199,7 +198,7 @@ function google_account_signin_with_phone_number(__bg_fields, __bg_callback = un
 function google_account_signup(__bg_fields = {}, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {	
 	__bg_fields[$ "returnSecureToken"] = true;
-	return __bg_google_accounts_http_request("signUp", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signUp", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/update
@@ -213,7 +212,7 @@ function google_account_signup(__bg_fields = {}, __bg_callback = undefined, __bg
 function google_account_update(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
 {
 	__bg_fields[$ "returnSecureToken"] = true;
-	return __bg_google_accounts_http_request("update", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("update", __bg_fields, __bg_callback, __bg_apikey);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/verifyIosClient
@@ -231,18 +230,24 @@ function google_account_verify_ios_client(__bg_token, __bg_is_sandbox, __bg_call
 {
 	var 
 	__bg_fields = {"appToken": __bg_token, "isSandbox": __bg_is_sandbox},
-	__bg_id		= __bg_google_accounts_http_request("verifyIosClient", json_stringify(__bg_fields), __bg_callback, __bg_apikey);
+	__bg_id		= __bg_google_accounts_http_request("verifyIosClient", __bg_fields, __bg_callback, __bg_apikey);
 	delete __bg_fields;
 	return __bg_id;
 }
 
-//Helper function to build google's account http request.
-function __bg_google_accounts_http_request(__bg_url, __bg_body, __bg_callback, __bg_apikey)
+/// @description					Internal helper function to build google's account http request.
+/// @param {String}		method		- Google's accounts rest api method.
+/// @param {Struct}		requestBody	- Field keys to be passed within the http body for specfied Google's accounts rest api method.
+/// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {String}		apikey		- Api key from google.
+/// @return {Real}					Http Async Request ID.
+function __bg_google_accounts_http_request(__bg_method, __bg_requestBody, __bg_callback, __bg_apikey)
 {
-	var __bg_id =  http_request("https://identitytoolkit.googleapis.com/v1/accounts:" + __bg_url + "?key=" + __bg_apikey, "POST", global.__BG_GOOGLE_ACCOUNTS_HTTP_MAP, __bg_body);
+	var __bg_id	= http_request("https://identitytoolkit.googleapis.com/v1/accounts:" + __bg_method + "?key=" + __bg_apikey, "POST", global.__BG_GOOGLE_ACCOUNTS_HTTP_HEADER_MAP, json_stringify(__bg_requestBody));
 	global.__bg_http_async_struct[$ __bg_id] = __bg_callback;//DELETE IF NOT USING WITHIN BG FRAMEWORK
 	return __bg_id;
 }
 
-global.__BG_GOOGLE_ACCOUNTS_HTTP_MAP					= ds_map_create();
-global.__BG_GOOGLE_ACCOUNTS_HTTP_MAP[? "Content-Type"]	= "application/json";
+global.__BG_GOOGLE_ACCOUNTS_HTTP_HEADER_MAP						= ds_map_create();
+global.__BG_GOOGLE_ACCOUNTS_HTTP_HEADER_MAP[? "Content-Type"]	= "application/json";
+#macro GOOGLE_ACCOUNTS_HTTP_HEADER_MAP							global.__BG_GOOGLE_ACCOUNTS_HTTP_HEADER_MAP
