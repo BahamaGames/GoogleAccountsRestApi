@@ -17,10 +17,10 @@ If <bahamagames> instance doesnt exists go to <__bg_google_accounts_http_request
 */
 
 //Default apikey to be used if function api keys are are not passed.
-#macro GOOGLE_APIKEY "ENTER_API_KEY_HERE"
+#macro GOOGLE_APIKEY				"ENTER_API_KEY_HERE"
 
-//Destroy map when done: ds_map_destroy(google_accounts_http_map);
-#macro google_accounts_http_map global._bg_google_accounts_http_map
+//Destroy map when done: ds_map_destroy(GOOGLE_ACCOUNTS_HTTP_MAP);
+#macro GOOGLE_ACCOUNTS_HTTP_MAP		global.__BG_GOOGLE_ACCOUNTS_HTTP_MAP
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/createAuthUri
 /// @description					If an email identifier is specified, checks and returns if any user account is 
@@ -114,7 +114,7 @@ function google_account_signin_with_custom_token(__bg_token, __bg_callback = und
 	return __bg_id;
 }
 
-//  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithCustomToken
+//  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithEmailLink
 /// @description					Signs in or signs up a user with a out-of-band code from an email link. If a user does not exist 
 ///									with the given email address, a user record will be created. If the sign-in succeeds, an Identity 
 ///									Platform ID and refresh token are issued for the authenticated user.
@@ -239,10 +239,10 @@ function google_account_verify_ios_client(__bg_token, __bg_is_sandbox, __bg_call
 //Helper function to build google's account http request.
 function __bg_google_accounts_http_request(__bg_url, __bg_body, __bg_callback, __bg_apikey)
 {
-	var __bg_id =  http_request("https://identitytoolkit.googleapis.com/v1/accounts:" + __bg_url + "?key=" + __bg_apikey, "POST", global._bg_google_accounts_http_map, __bg_body);
+	var __bg_id =  http_request("https://identitytoolkit.googleapis.com/v1/accounts:" + __bg_url + "?key=" + __bg_apikey, "POST", global.__BG_GOOGLE_ACCOUNTS_HTTP_MAP, __bg_body);
 	global.__bg_http_async_struct[$ __bg_id] = __bg_callback;//DELETE IF NOT USING WITHIN BG FRAMEWORK
 	return __bg_id;
 }
 
-global._bg_google_accounts_http_map						= ds_map_create();
-global._bg_google_accounts_http_map[? "Content-Type"]	= "application/json";
+global.__BG_GOOGLE_ACCOUNTS_HTTP_MAP					= ds_map_create();
+global.__BG_GOOGLE_ACCOUNTS_HTTP_MAP[? "Content-Type"]	= "application/json";
