@@ -17,7 +17,7 @@ If <bahamagames> instance doesnt exists go to <__bg_google_accounts_http_request
 */
 
 //Default apikey to be used if function api keys are are not passed.
-#macro GOOGLE_APIKEY ""
+#macro GOOGLE_APIKEY "ENTER_API_KEY_HERE"
 
 //Destroy map when done: ds_map_destroy(google_accounts_http_map);
 #macro google_accounts_http_map global._bg_google_accounts_http_map
