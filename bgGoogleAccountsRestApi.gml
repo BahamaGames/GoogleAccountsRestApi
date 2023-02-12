@@ -15,11 +15,28 @@ Go to respective end-point to see response json.
 
 If <bahamagames> instance doesnt exists go to <__bg_google_accounts_http_request>, and delete marked line.
 
-Destroy ds_map <GOOGLE_ACCOUNTS_HTTP_HEADER_MAP> when done: ds_map_destroy(GOOGLE_ACCOUNTS_HTTP_HEADER_MAP);
+Destroy ds_map <GOOGLE_HTTP_HEADER_MAP> when done: ds_map_destroy(GOOGLE_HTTP_HEADER_MAP);
+
+If <bahamagames> object doesnt exists create this function and add it to a objects http async event:
+function bg_http_execute(__bg_async_load = async_load)
+{
+	var 
+	__bg_id = __bg_async_load[? "id"],
+	__bg_cb = global.__bg_http_async_struct[$ __bg_id];
+	
+	if(__bg_cb != undefined)
+	{
+		__bg_cb[0](__bg_async_load, __bg_cb[1]);
+		if(__bg_async_load[? "status"] == 0) variable_struct_remove(global.__bg_http_async_struct, __bg_id);
+	}
+}
 */
 
 //Default apikey to be used if function api keys are are not passed.
 #macro GOOGLE_APIKEY				"ENTER_API_KEY_HERE"
+
+//Can add additional fields to the http header request.
+#macro GOOGLE_HTTP_HEADER_MAP		global.__bg_google_http_header_map
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/createAuthUri
 /// @description					If an email identifier is specified, checks and returns if any user account is 
@@ -29,22 +46,26 @@ Destroy ds_map <GOOGLE_ACCOUNTS_HTTP_HEADER_MAP> when done: ds_map_destroy(GOOGL
 ///									this URI to sign in with the IdP.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_create_auth_uri(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_create_auth_uri(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("createAuthUri", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("createAuthUri", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/delete
 /// @description					Deletes a user's account.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_delete(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_delete(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("delete", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("delete", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/lookup
@@ -53,11 +74,13 @@ function google_account_delete(__bg_fields, __bg_callback = undefined, __bg_apik
 ///									credential, retrieves one or multiple account(s) with matching criteria.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_lookup(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_lookup(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("lookup", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("lookup", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/resetPassword
@@ -66,11 +89,13 @@ function google_account_lookup(__bg_fields, __bg_callback = undefined, __bg_apik
 ///									purpose of an out-of-band code without consuming it.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_reset_password(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_reset_password(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("resetPassword", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("resetPassword", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/sendOobCode
@@ -78,22 +103,26 @@ function google_account_reset_password(__bg_fields, __bg_callback = undefined, _
 ///									request can optionally return a link including the OOB code instead of sending it.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_send_oob_code(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_send_oob_code(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("sendOobCode", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("sendOobCode", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/sendVerificationCode
 /// @description					Sends a SMS verification code for phone number sign-in.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_send_verification_code(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_send_verification_code(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("sendVerificationCode", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("sendVerificationCode", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithCustomToken
@@ -102,13 +131,15 @@ function google_account_send_verification_code(__bg_fields, __bg_callback = unde
 ///									the user.
 /// @param {String}		token		- A JSON Web Token (JWT) that includes the claims listed in the (end-point API reference under the "Custom Token Claims" section).
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_signin_with_custom_token(__bg_token, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_signin_with_custom_token(__bg_token, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
 	var 
 	__bg_fields	= {"requestSecureToken": true, "token": __bg_token},
-	__bg_id		= __bg_google_accounts_http_request("signInWithCustomToken", __bg_fields, __bg_callback, __bg_apikey);
+	__bg_id		= __bg_google_accounts_http_request("signInWithCustomToken", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 	delete __bg_fields;
 	return __bg_id;
 }
@@ -119,11 +150,13 @@ function google_account_signin_with_custom_token(__bg_token, __bg_callback = und
 ///									Platform ID and refresh token are issued for the authenticated user.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_signin_with_email_link(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_signin_with_email_link(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("signInWithEmailLink", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signInWithEmailLink", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithGameCenter
@@ -132,11 +165,13 @@ function google_account_signin_with_email_link(__bg_fields, __bg_callback = unde
 ///									is required in the request header as x-ios-bundle-identifier.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_signin_with_game_center(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_signin_with_game_center(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("signInWithGameCenter", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signInWithGameCenter", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithIdp
@@ -149,11 +184,13 @@ function google_account_signin_with_game_center(__bg_fields, __bg_callback = und
 ///									existing Identity Platform user account with the same email address for a new user account to be created.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_signin_with_idp(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_signin_with_idp(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("signInWithIdp", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signInWithIdp", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signInWithPassword
@@ -162,13 +199,15 @@ function google_account_signin_with_idp(__bg_fields, __bg_callback = undefined, 
 /// @param {Struct}		email		- The email the user is signing in with. The length of email should be less than 256 characters and in the format of name@domain.tld. The email should also match the RFC 822 addr-spec production.
 /// @param {String}		password	- The password the user provides to sign in to the account.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_signin_with_password(__bg_email, __bg_password, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_signin_with_password(__bg_email, __bg_password, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
 	var 
 	__bg_fields = {"returnSecureToken": true, "email": __bg_email, "password": __bg_password},
-	__bg_id		= __bg_google_accounts_http_request("signInWithPassword", __bg_fields, __bg_callback, __bg_apikey);
+	__bg_id		= __bg_google_accounts_http_request("signInWithPassword", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 	delete __bg_fields;
 	return __bg_id;
 }
@@ -179,11 +218,13 @@ function google_account_signin_with_password(__bg_email, __bg_password, __bg_cal
 ///									the phone number. This method may also be used to link a phone number to an existing user.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_signin_with_phone_number(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_signin_with_phone_number(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
-	return __bg_google_accounts_http_request("signInWithPhoneNumber", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signInWithPhoneNumber", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/signUp
@@ -193,12 +234,14 @@ function google_account_signin_with_phone_number(__bg_fields, __bg_callback = un
 ///									number user.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_signup(__bg_fields = {}, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_signup(__bg_fields = {}, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {	
 	__bg_fields[$ "returnSecureToken"] = true;
-	return __bg_google_accounts_http_request("signUp", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("signUp", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/update
@@ -207,12 +250,14 @@ function google_account_signup(__bg_fields = {}, __bg_callback = undefined, __bg
 ///									supported.
 /// @param {Struct}		fields		- Keys that can be entered can be found at end-point.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_update(__bg_fields, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_update(__bg_fields, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
 	__bg_fields[$ "returnSecureToken"] = true;
-	return __bg_google_accounts_http_request("update", __bg_fields, __bg_callback, __bg_apikey);
+	return __bg_google_accounts_http_request("update", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 }
 
 //  end-point						https://cloud.google.com/identity-platform/docs/reference/rest/v1/accounts/verifyIosClient
@@ -224,13 +269,15 @@ function google_account_update(__bg_fields, __bg_callback = undefined, __bg_apik
 /// @param {String}		appToken	- A device token that the iOS client gets after registering to APNs (Apple Push Notification service).
 /// @param {String}		isSandBox	- Whether the app token is in the iOS sandbox. If false, the app token is in the production environment.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function google_account_verify_ios_client(__bg_token, __bg_is_sandbox, __bg_callback = undefined, __bg_apikey = GOOGLE_APIKEY)
+function google_account_verify_ios_client(__bg_token, __bg_is_sandbox, __bg_callback = undefined, __bg_argument = undefined, __bg_apikey = GOOGLE_APIKEY, __bg_status = true)
 {
 	var 
 	__bg_fields = {"appToken": __bg_token, "isSandbox": __bg_is_sandbox},
-	__bg_id		= __bg_google_accounts_http_request("verifyIosClient", __bg_fields, __bg_callback, __bg_apikey);
+	__bg_id		= __bg_google_accounts_http_request("verifyIosClient", __bg_fields, __bg_callback, __bg_argument, __bg_apikey, __bg_status);
 	delete __bg_fields;
 	return __bg_id;
 }
@@ -239,15 +286,22 @@ function google_account_verify_ios_client(__bg_token, __bg_is_sandbox, __bg_call
 /// @param {String}		method		- Google's accounts rest api method.
 /// @param {Struct}		requestBody	- Field keys to be passed within the http body for specfied Google's accounts rest api method.
 /// @param {Function}	callback	- Function to execute with http async_load as parameter.
+/// @param {Any}		argument	- Argument to be passed to callback.
 /// @param {String}		apikey		- Api key from google.
+/// @param {Bool}		status		- Execute callback only when [? "status"] == 0.
 /// @return {Real}					Http Async Request ID.
-function __bg_google_accounts_http_request(__bg_method, __bg_requestBody, __bg_callback, __bg_apikey)
+function __bg_google_accounts_http_request(__bg_method, __bg_requestBody, __bg_callback, __bg_argument, __bg_apikey, __bg_status)
 {
-	var __bg_id	= http_request("https://identitytoolkit.googleapis.com/v1/accounts:" + __bg_method + "?key=" + __bg_apikey, "POST", global.__BG_GOOGLE_ACCOUNTS_HTTP_HEADER_MAP, json_stringify(__bg_requestBody));
-	global.__bg_http_async_struct[$ __bg_id] = __bg_callback;//DELETE IF NOT USING WITHIN BG FRAMEWORK
+	var __bg_id	= http_request("https://identitytoolkit.googleapis.com/v1/accounts:" + __bg_method + "?key=" + __bg_apikey, "POST", global.__bg_google_http_header_map, json_stringify(__bg_requestBody));
+	if(__bg_callback != undefined) global.__bg_http_async_struct[$ __bg_id] = [__bg_callback, __bg_argument, __bg_status];//DELETE IF NOT USING WITHIN BG FRAMEWORK
 	return __bg_id;
 }
 
-global.__BG_GOOGLE_ACCOUNTS_HTTP_HEADER_MAP						= ds_map_create();
-global.__BG_GOOGLE_ACCOUNTS_HTTP_HEADER_MAP[? "Content-Type"]	= "application/json";
-#macro GOOGLE_ACCOUNTS_HTTP_HEADER_MAP							global.__BG_GOOGLE_ACCOUNTS_HTTP_HEADER_MAP
+//check if the map doesnt exists.
+if(!variable_global_exists("__bg_google_http_header_map"))
+{
+	global.__bg_google_http_header_map						= ds_map_create();
+	global.__bg_google_http_header_map[? "Content-Type"]	= "application/json";
+}
+
+if(!variable_global_exists("__bg_http_async_struct")) global.__bg_http_async_struct = {};
